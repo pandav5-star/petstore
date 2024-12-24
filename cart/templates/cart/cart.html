@@ -1,0 +1,48 @@
+{% extends 'shop/base.html' %}
+
+{% block title %}Home page{% endblock %}
+
+{% block body %} 
+
+<form action="/cart" method="post" style="margin-top: 70px;">
+    {% csrf_token %}
+<table class="table">
+    <thead>
+      <tr>
+        <th >image</th>
+        <th >pro_name</th>
+        <th >Desc</th>
+        <th >price</th>
+        <th >Quantity</th>
+        <th >Delete</th>
+        <th >Add</th>
+      </tr>
+    </thead>
+    {% for i in products %}
+    <tbody>
+      <tr>
+        <td><img src="{{i.product_image.url}}"  height="100px" width="90px"></td>
+        <td>{{i.product_name}}</td>
+        <td>{{i.product_desc}}</td>
+        <td>₹ {{i.total_price}}</td>
+        <td>{{i.quantity}}</td>
+        <td><button formaction="/cart/deletefromcart" name="pname" value="{{i.product_name}}"class="btn btn-danger">Delete</button></td>
+        <td><button class="btn btn-primary" formaction="/shop/">Add</button></td>
+      </tr>
+      {% endfor %}
+    <center><tr>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td><button formaction="/order/checkout" class="btn btn-success" style="float: right; margin-bottom: 20px; margin-top: 10px;">Checkout</button></td>
+      <td></td>
+      </tr></center>
+      
+    </tbody>
+    
+  </table>
+</form>
+
+{% endblock %}

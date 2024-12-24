@@ -1,0 +1,19 @@
+.bg{
+    background-image: url('/static/image/docomo.jpg');
+    background-repeat: no-repeat; 
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    
+} 
+.a{
+    background-color: rgb(162, 209, 9);
+}
+
+/* ::placeholder {
+    color: black;
+ } */
+
+
+
+    

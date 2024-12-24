@@ -1,0 +1,140 @@
+{% extends 'shop/base.html' %}
+
+{% block body %}
+
+<div class="container" style="padding: 40px 20px; width: 400px; border: 2px solid black; background-color: white; float: left;margin-left: 30px;margin-right: 50px; margin-top: 120px;">
+
+<form  action="/order/" method="post">
+  {% csrf_token %}
+    <div>
+   <legend>Enter shipping details</legend><br><br>
+    <div class="mb-3">
+        <strong><label for="exampleInputEmail1" class="form-label">First</label></strong>
+        <input type="text" name="first" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter your first name">
+
+    <div class="mb-3">
+       <strong><label for="exampleInputEmail1" class="form-label" >Last</label></strong>
+        <input type="text" name="last" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter your last name">    
+
+    <div class="mb-3">
+      <strong><label for="exampleInputPassword1" class="form-label">Email</label></strong>
+      <input type="email" name="email" class="form-control" id="exampleInputPassword1" placeholder="Enter your email">
+  </div>
+
+    <div class="mb-3">
+      <strong><label for="exampleInputEmail1" class="form-label">City</label></strong>
+      <input type="text" name="city" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter your city">
+    </div>
+
+    <div class="mb-3"></div>
+        <strong><label for="exampleInputEmail1" class="form-label">State</label></strong>
+        <input type="text" name="state" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter your state">
+    </div>
+
+    <div class="mb-3"></div>
+        <strong><label for="exampleInputEmail1" class="form-label">Zipcode</label></strong>
+        <input type="text" name="zipco" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter your zipcode">
+    </div>
+    
+</div>
+<center><button type="submit" name="paypal-button-id" id="paypal-button-id" class="btn btn-success" style="margin-top: 20px;">Continue</button></center>
+</div>
+</div>
+</form><br>
+
+
+<form action="/cart" method="post">
+    {% csrf_token %}
+<table class="table" style="border: 1px solid black; height: 650px; width: 700px; margin-right: 250px; padding: 30px; margin-top: 120px;">
+    <thead>
+      <tr>
+        <th>image</th>
+        <th>pro_name</th>
+        <th>Desc</th>
+        <th>price</th>
+        <th>Quantity</th>
+        <th>Delete</th>
+        <th>Order</th>
+        
+      </tr>
+    </thead>
+    {% for i in products %}
+    <tbody>
+      <tr>
+        <td><img src="{{i.product_image.url}}"  height="100px" width="90px"></td>
+        <td>{{i.product_name}}</td>
+        <td>{{i.product_desc}}</td>
+        <td>₹ {{i.product_price}}</td>
+        <td>{{i.quantity}}</td>
+        <td><button formaction="/cart/deletefromcart" name="pname" value="{{i.product_name}}"class="btn btn-danger">Delete</button></td>
+        <td><button class="btn btn-primary" formaction="/shop/">Explore</button></td>
+      </tr>
+      
+    </tbody>
+    {% endfor %}
+    <tr>
+      <td></td>
+      <td></td>
+      <td style="font-size: large;">total_amount</td>
+      <td style="font-size: large;">₹{{total_amount}}</td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+   
+  </table>
+  <div id="paypal-button-container" style=" margin-top: 50px; margin-left: 160px; border: 2px solid black;height: 230px; width: 500px; padding: 50px;margin-bottom: 20px;"></div>
+  <div id="paypal-payment-id" name="paypal-payment-id"></div>
+</form>
+
+<div>
+<!-- <center><button formaction="/order/checkout" class="btn btn-success" style="float: right; margin-right:1070px; margin-bottom: 50px;margin-top: 30px;">Checkout</button></center> -->
+</div>
+{% endblock %}
+
+
+{% block content %}
+<center>
+
+<script src="https://sandbox.paypal.com/sdk/js?client-id=ARhDyBop3_dPKznLFdZ9nA8DI9rNMcvNb5HxXms57aaFYqaste3x3OGdi62eS8CsPm1IiTuu3JfTKoNW&components=buttons"></script>
+<script>
+  function initPayPalButton(){
+  paypal.Buttons({
+  style: {
+  shape: 'rect',
+  color: 'gold',
+  layout: 'vertical',
+  label: 'paypal',
+  },
+  
+  createOrder:function(data,actions){
+  return actions.order.create({
+  purchase_units: [{"amount":{"currency_code": "USD", "value": '0.01'}}]
+  });
+  },
+  onApprove:function(data,actions){
+  return actions.order.capture().then(function(orderData){
+  var paypalPaymentID = orderData.purchase_units[0].payments.captures[0].id;
+  // Full available details
+  console.log('Capture result', orderData, JSON.stringify(orderData, null, 2));
+  // Show a success message within this page, for example:
+  const element= document.getElementById('paypal-button-container');
+  element.innerHTML = '';
+  element.innerHTML = '<h3>Thank you for your payment!</h3>' + paypalPaymentID;
+  document.getElementById('paypal-payment-id').value = paypalPaymentID;
+  document.getElementById('paypal-button-id').value = paypalPaymentID;
+  document.getElementById('myform').submit();
+  // actions.redirect('http://127.0.0.1:8000/order/');
+  });
+  },
+  onError:function(err){
+  console.log(err);
+  }
+  }).render('#paypal-button-container');
+  }
+  initPayPalButton();
+</script>
+
+</center>
+{% endblock %}
+

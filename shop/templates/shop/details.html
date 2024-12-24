@@ -1,0 +1,41 @@
+{% extends 'shop/base.html' %}
+
+{% block title %}Book Information{% endblock %}
+
+{% block body %}
+<!-- <form action="/shop/details"> -->
+<form action="/cart/addtocart/" method="post">
+{% csrf_token %}
+<div class="container py-5" style="margin-top: 100px;">
+    <div class="row justify-content-center">
+        {% if pro %}
+            <div class="col-md-8 d-flex">
+                <div class="card flex-row shadow-sm" style="width: 100%;">
+                    <img src="{{ pro.product_image.url }}" class="card-img-left" alt="{{ pro.product_image }}" style="height: 350px; width: 450px; object-fit: cover;">
+                    <div class="card-body">
+                        <h2 class="card-title">{{ pro.product_name }}</h2>
+                        
+                        <h5 class="card-subtitle mb-2 text-muted"><strong>Type: {{ pro.product_desc }}</strong></h5>
+                        <b> ₹ {{pro.product_price}} </b><br>
+                        <h6 class="card-text">Description:</h6>
+                        <i><p class="card-text">{{ pro.details }}</p></i>
+                        
+                    </div>
+                </div>
+            </div>
+
+        
+            
+            
+        <div class="col-md-8 text-center mt-3">
+            <div class="card-footer">
+                <a href="{% url 'shop' %}" class="btn btn-secondary">Back to Home</a>
+                <button formaction="/cart/addtocart" type="submit" name="pid" value="{{pro.id}}" class="btn btn-primary">Add to Cart</button>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+</form>
+</form>
+{% endblock %}
